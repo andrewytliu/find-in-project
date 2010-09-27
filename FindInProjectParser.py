@@ -15,6 +15,35 @@ class FindInProjectParser:
         #print self.raw
 
     def html(self):
+        blocks = self.__tuple()
+        result = ""
+        for block in blocks:
+            table = """
+<table>
+    <colgroup class="line-number"></colgroup>
+    <colgroup class="code"></colgroup>
+    <thead>
+        <tr>
+            <td class="filename" colspan="2">%s</td>
+        </tr>
+    </thead>
+    <tbody>
+            """ % block[0][0]
+            for line in block:
+                table += """
+        <tr>
+            <td>%s</td>
+            <td>%s</td>
+        </tr>
+                """ % (line[1], line[3])
+            table += """
+    </tbody>
+</table>
+            """
+            result += table
+        return result
+
+    def __tuple(self):
         #\x1b[0mew\x1b[0m-64-
         #\x1b[0mew\x1b[0m-65-
         #\x1b[0mew\x1b[0m:66:if __name__ == "\x1b[33m__main__\x1b[0m":\x1b[0m\x1b[K
@@ -30,6 +59,7 @@ class FindInProjectParser:
         return lines
 
     def __metadata(self, line):
-        match = re.match("^\\x1b\[0m(.*?)\\x1b\[0m[:-](\d+)[:-](.*)", line)
-        return (match.group(1), match.group(2), match.group(3))
+        match = re.match("^\\x1b\[0m(.*?)\\x1b\[0m[:-](\d+)([:-])(.*)", line)
+        matched = (match.group(3) == ':')
+        return (match.group(1), match.group(2), matched, match.group(4))
 
