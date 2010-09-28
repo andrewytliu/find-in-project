@@ -1,0 +1,2 @@
+from FindInProject import FindInProjectPlugin
+

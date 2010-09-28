@@ -1,6 +1,7 @@
 import gtk, gedit
 import webkit
 import pygtk
+from FindInProjectParser import FindInProjectParser
 
 ui_str="""<ui>
 <menubar name="MenuBar">
@@ -26,7 +27,9 @@ class FindInProjectWindow:
         self._window.set_destroy_with_parent(True)
         self._window.add(self._browser)
         self._window.show_all()
-        self._browser.load_string("<h1>Hi!</h1>", "text/html", "utf-8", "about:")
+
+    def show_html(self, html):
+        self._browser.load_string(html, "text/html", "utf-8", "about:")
 
 class FindInProjectPluginInstance:
     def __init__(self, window):
@@ -55,8 +58,9 @@ class FindInProjectPluginInstance:
         manager.remove_action_group(self._action_group)
         manager.ensure_update()
 
-    def show_window(self):
-        pass
+    def show_window(self, window):
+        self._window = FindInProjectWindow()
+        self._window.show_html(FindInProjectParser('EastwindSet', '/home/eggegg/project/eastwind').html())
 
 class FindInProjectPlugin(gedit.Plugin):
     def __init__(self):
