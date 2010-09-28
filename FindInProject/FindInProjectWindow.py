@@ -65,10 +65,6 @@ class FindInProjectWindow:
         self._window = self._builder.get_object("find-in-project")
         self._browser = FindInProjectBrowser()
         self._browser.connect("navigation-requested", self.goto_file)
-        self._window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
-        self._window.resize(600,500)
-        self._window.set_destroy_with_parent(True)
-        self._window.set_title("Find in Project")
         self._window.connect("delete_event", self._window.hide_on_delete)
         self._window.connect("key-release-event", self.window_key)
         self._searchbox = self._builder.get_object("searchbox")
@@ -100,6 +96,7 @@ class FindInProjectWindow:
     def search(self, event):
         self._path = filebrowser_root()
         query = self._searchbox.get_active_text()
+        self._searchbox.append_text(query)
         html = FindInProjectParser(query, url2pathname(self._path)[7:]).html()
         self._browser.load_string(style_str + html, "text/html", "utf-8", "about:")
 
