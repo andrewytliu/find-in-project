@@ -24,9 +24,9 @@ class FindInProjectParser:
 <table>
     <colgroup class="line-number"></colgroup>
     <colgroup class="code"></colgroup>
-    <thead>
+    <thead onclick="javascript:toggle(this)">
         <tr>
-            <td class="filename" colspan="2">%s</td>
+            <td class="filename" colspan="2"><span class="open">&#9660;</span> %s</td>
         </tr>
     </thead>
     <tbody>

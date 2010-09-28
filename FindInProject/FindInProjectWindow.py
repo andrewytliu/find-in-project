@@ -18,7 +18,7 @@ tbody {
 }
 table {
   margin: 10px;
-  width: 95%;
+  width: 97%;
   table-layout: fixed;
   word-wrap: break-word;
   border-collapse: collapse;
@@ -33,7 +33,7 @@ table {
 thead td {
   padding: 6px 10px;
 }
-tbody tr {
+tbody tr, thead {
   cursor: hand;
 }
 .line-number{
@@ -49,6 +49,18 @@ tbody tr:nth-child(even) td:nth-child(2){
 <script type="text/javascript">
 function goto(file, line) {
   window.location = "gedit:///" + file + "?line=" + line;
+}
+function toggle(dom) {
+  triangle = dom.getElementsByTagName('span')[0];
+  if(triangle.className == 'open') {
+    dom.parentNode.tBodies[0].style.display = 'none';
+    triangle.innerHTML = '&#9654;';
+    triangle.className = 'close';
+  } else {
+    dom.parentNode.tBodies[0].style.display = '';
+    triangle.innerHTML = '&#9660;';
+    triangle.className = 'open';
+  }
 }
 </script>"""
 
