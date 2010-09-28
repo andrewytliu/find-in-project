@@ -30,9 +30,10 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkComboBoxEntry" id="searchbox">
+                  <object class="GtkEntry" id="searchbox">
                     <property name="visible">True</property>
-                    <property name="model">search-history</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">&#x25CF;</property>
                   </object>
                   <packing>
                     <property name="padding">5</property>
@@ -108,12 +109,6 @@
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkListStore" id="search-history">
-    <columns>
-      <!-- column-name history -->
-      <column type="gchararray"/>
-    </columns>
   </object>
 </interface>
 

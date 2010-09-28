@@ -1,4 +1,5 @@
 import gtk, gedit
+import gobject
 import webkit
 import pygtk
 import os
@@ -71,6 +72,11 @@ class FindInProjectWindow:
         self._searchbox.connect("key-release-event", self.searchbox_key)
         self._builder.get_object("search-button").connect("clicked", self.search)
         self._builder.get_object("placeholder").add(self._browser)
+        self._history = gtk.ListStore(gobject.TYPE_STRING)
+        self._completion = gtk.EntryCompletion()
+        self._completion.set_model(self._history)
+        self._searchbox.set_completion(self._completion)
+        self._completion.set_text_column(0)
 
     def init(self):
         self._window.show_all()
@@ -95,8 +101,8 @@ class FindInProjectWindow:
 
     def search(self, event):
         self._path = filebrowser_root()
-        query = self._searchbox.get_active_text()
-        self._searchbox.append_text(query)
+        query = self._searchbox.get_text()
+        self._history.set(self._history.append(), 0, query)
         html = FindInProjectParser(query, url2pathname(self._path)[7:]).html()
         self._browser.load_string(style_str + html, "text/html", "utf-8", "about:")
 
