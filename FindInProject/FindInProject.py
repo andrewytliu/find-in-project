@@ -52,6 +52,7 @@ class FindInProjectWindow:
         self._window.resize(600,500)
         self._window.set_destroy_with_parent(True)
         self._searchbox = self._builder.get_object("searchbox")
+        self._searchbox.connect("key-release-event", self.searchbox_keyboard)
         self._builder.get_object("search-button").connect("clicked", self.search)
         self._builder.get_object("placeholder").add(self._browser)
         self._window.show_all()
@@ -59,6 +60,11 @@ class FindInProjectWindow:
     def init(self):
         #self._searchbox.select_region(0,-1)
         self._searchbox.grab_focus()
+
+    def searchbox_keyboard(self, widget, event):
+        if event.keyval == gtk.keysyms.Return:
+            self._builder.get_object("search-button").grab_focus()
+            self.search(event)
 
     def search(self, event):
         path = filebrowser_root()
