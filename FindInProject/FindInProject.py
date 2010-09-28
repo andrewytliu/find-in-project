@@ -18,16 +18,17 @@ ui_str="""<ui>
 """
 
 style_str="""<style>
-.code, .line-number {
-  font-family: Consolas, Monospace,"Courier New", courier, monospace;
-  word-wrap: break-word;
+.match {
+  color: black;
 }
-.line-number {
-  width: 15px;
+tbody {
+  font-family: Consolas, Monospace,"Courier New", courier, monospace;
+  color: #a0a0a0;
 }
 table {
   margin: 10px;
-  width: 580px;
+  /* width: 800px; */
+  border-collapse: collapse;
 }
 .filename {
   background-color: #D2D2D2;
@@ -35,6 +36,23 @@ table {
 }
 .highlight {
   background-color: #yellow;
+}
+thead td {
+  padding: 6px 10px;
+}
+.line-number{
+  width: 43px;
+  background: #D2D2D2;
+  text-align:right;
+  padding: 4px 6px;
+}
+.code{
+  width: 800px;
+  word-wrap: break-word;
+  display: block;
+}
+tbody tr:nth-child(even) td:nth-child(2){
+  background: #efefef;
 }
 </style>"""
 
@@ -51,6 +69,7 @@ class FindInProjectWindow:
         self._window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
         self._window.resize(600,500)
         self._window.set_destroy_with_parent(True)
+        self._window.set_title("Find in Project")
         self._window.connect("delete_event", self._window.hide_on_delete)
         self._window.connect("key-release-event", self.window_key)
         self._searchbox = self._builder.get_object("searchbox")
@@ -77,6 +96,7 @@ class FindInProjectWindow:
         query = self._searchbox.get_active_text()
         html = FindInProjectParser(query, url2pathname(path)[7:]).html()
         self._browser.load_string(style_str + html, "text/html", "utf-8", "about:")
+        print style_str + html
 
 class FindInProjectPluginInstance:
     def __init__(self, window):

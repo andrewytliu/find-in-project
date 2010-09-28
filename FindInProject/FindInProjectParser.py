@@ -28,12 +28,15 @@ class FindInProjectParser:
     <tbody>
             """ % block[0][0]
             for line in block:
+                matchclass = ""
+                if line[2]:
+                    matchclass = ' match'
                 table += """
         <tr>
-            <td class="line-number">%s</td>
-            <td class="code">%s</td>
+            <td class="line-number%s">%s</td>
+            <td class="code%s">%s</td>
         </tr>
-                """ % (line[1], line[3])
+                """ % (matchclass, line[1], matchclass, line[3])
             table += """
     </tbody>
 </table>
