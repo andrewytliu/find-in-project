@@ -20,8 +20,6 @@ class FindInProjectParser:
         for block in blocks:
             table = """
 <table>
-    <colgroup class="line-number"></colgroup>
-    <colgroup class="code"></colgroup>
     <thead>
         <tr>
             <td class="filename" colspan="2">%s</td>
@@ -32,8 +30,8 @@ class FindInProjectParser:
             for line in block:
                 table += """
         <tr>
-            <td>%s</td>
-            <td>%s</td>
+            <td class="line-number">%s</td>
+            <td class="code">%s</td>
         </tr>
                 """ % (line[1], line[3])
             table += """
@@ -52,8 +50,6 @@ class FindInProjectParser:
 
         # strip empty highlight
         process = self.raw.replace('\x1b[0m\x1b[K','')
-        # highlight with span
-        process = re.sub("\\x1b\[33m(.*?)\\x1b\[0m", '<span class="highlight">\\1</span>', process)
         groups = process.split('--')
         lines = [[self.__metadata(l) for l in g.split('\n') if l != ''] for g in groups]
         return lines
@@ -61,5 +57,7 @@ class FindInProjectParser:
     def __metadata(self, line):
         match = re.match("^\\x1b\[0m(.*?)\\x1b\[0m[:-](\d+)([:-])(.*)", line)
         matched = (match.group(3) == ':')
-        return (match.group(1), match.group(2), matched, match.group(4))
+        clear = match.group(4).replace(' ', '&nbsp;')
+        clear = re.sub("\\x1b\[33m(.*?)\\x1b\[0m", '<span class="highlight">\\1</span>', clear)
+        return (match.group(1), match.group(2), matched, clear)
 
