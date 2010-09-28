@@ -20,6 +20,8 @@ class FindInProjectParser:
         for block in blocks:
             table = """
 <table>
+    <colgroup class="line-number"></colgroup>
+    <colgroup class="code"></colgroup>
     <thead>
         <tr>
             <td class="filename" colspan="2">%s</td>
@@ -32,11 +34,11 @@ class FindInProjectParser:
                 if line[2]:
                     matchclass = ' match'
                 table += """
-        <tr>
+        <tr onclick="javascript:goto('%s', %s)">
             <td class="line-number%s">%s</td>
             <td class="code%s">%s</td>
         </tr>
-                """ % (matchclass, line[1], matchclass, line[3])
+                """ % (line[0], line[1], matchclass, line[1], matchclass, line[3])
             table += """
     </tbody>
 </table>

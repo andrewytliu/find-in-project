@@ -1,0 +1,105 @@
+import gtk, gedit
+import webkit
+import pygtk
+import os
+import re
+from urllib import url2pathname
+from FindInProjectParser import FindInProjectParser
+from FindInProjectUtil import filebrowser_root
+
+style_str="""<style>
+.match {
+  color: black;
+}
+tbody {
+  font-family: Consolas, Monospace,"Courier New", courier, monospace;
+  color: #a0a0a0;
+}
+table {
+  margin: 10px;
+  width: 95%;
+  table-layout: fixed;
+  word-wrap: break-word;
+  border-collapse: collapse;
+}
+.filename {
+  background-color: #D2D2D2;
+  font-weight: bold;
+}
+.highlight {
+  background-color: #yellow;
+}
+thead td {
+  padding: 6px 10px;
+}
+tbody tr {
+  cursor: hand;
+}
+.line-number{
+  width: 43px;
+  background: #D2D2D2;
+  text-align:right;
+  padding: 4px 6px;
+}
+tbody tr:nth-child(even) td:nth-child(2){
+  background: #efefef;
+}
+</style>
+<script type="text/javascript">
+function goto(file, line) {
+  window.location = "gedit:///" + file + "?line=" + line;
+}
+</script>"""
+
+class FindInProjectBrowser(webkit.WebView):
+    def __init__(self):
+        webkit.WebView.__init__(self)
+
+class FindInProjectWindow:
+    protocol = re.compile(r'(?P<protocol>^gedit:\/\/)(?P<file>.*?)\?line=(?P<line>.*?)$')
+
+    def __init__(self, gedit_window):
+        self._gedit_window = gedit_window
+        self._builder = gtk.Builder()
+        self._builder.add_from_file(os.path.join(os.path.dirname( __file__ ), "window.glade"))
+        self._window = self._builder.get_object("find-in-project")
+        self._browser = FindInProjectBrowser()
+        self._browser.connect("navigation-requested", self.goto_file)
+        self._window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
+        self._window.resize(600,500)
+        self._window.set_destroy_with_parent(True)
+        self._window.set_title("Find in Project")
+        self._window.connect("delete_event", self._window.hide_on_delete)
+        self._window.connect("key-release-event", self.window_key)
+        self._searchbox = self._builder.get_object("searchbox")
+        self._searchbox.connect("key-release-event", self.searchbox_key)
+        self._builder.get_object("search-button").connect("clicked", self.search)
+        self._builder.get_object("placeholder").add(self._browser)
+
+    def init(self):
+        self._window.show_all()
+        self._searchbox.grab_focus()
+
+    def goto_file(self, page, frame, request):
+        match = self.protocol.search(request.get_uri())
+        if match:
+            file_uri = self._path + match.group('file')
+            line_number = match.group('line')
+            gedit.commands.load_uri(self._gedit_window, file_uri, gedit.encoding_get_current(), int(line_number))
+            return True
+
+    def window_key(self, widget, event):
+        if event.keyval == gtk.keysyms.Escape:
+            self._window.hide()
+
+    def searchbox_key(self, widget, event):
+        if event.keyval == gtk.keysyms.Return:
+            self._builder.get_object("search-button").grab_focus()
+            self.search(event)
+
+    def search(self, event):
+        self._path = filebrowser_root()
+        query = self._searchbox.get_active_text()
+        html = FindInProjectParser(query, url2pathname(self._path)[7:]).html()
+        self._browser.load_string(style_str + html, "text/html", "utf-8", "about:")
+
