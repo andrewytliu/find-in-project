@@ -17,6 +17,27 @@ ui_str="""<ui>
 </ui>
 """
 
+style_str="""<style>
+.code, .line-number {
+  font-family: Consolas, Monospace,"Courier New", courier, monospace;
+  word-wrap: break-word;
+}
+.line-number {
+  width: 15px;
+}
+table {
+  margin: 10px;
+  width: 580px;
+}
+.filename {
+  background-color: #D2D2D2;
+  font-weight: bold;
+}
+.highlight {
+  background-color: #yellow;
+}
+</style>"""
+
 class FindInProjectBrowser(webkit.WebView):
     def __init__(self):
         webkit.WebView.__init__(self)
@@ -32,15 +53,18 @@ class FindInProjectWindow:
         self._window.set_destroy_with_parent(True)
         self._searchbox = self._builder.get_object("searchbox")
         self._builder.get_object("search-button").connect("clicked", self.search)
-        self._pane = self._builder.get_object("splitter")
-        self._pane.add(self._browser)
+        self._builder.get_object("placeholder").add(self._browser)
         self._window.show_all()
+
+    def init(self):
+        #self._searchbox.select_region(0,-1)
+        self._searchbox.grab_focus()
 
     def search(self, event):
         path = filebrowser_root()
         query = self._searchbox.get_active_text()
         html = FindInProjectParser(query, url2pathname(path)[7:]).html()
-        self._browser.load_string(html, "text/html", "utf-8", "about:")
+        self._browser.load_string(style_str + html, "text/html", "utf-8", "about:")
 
 class FindInProjectPluginInstance:
     def __init__(self, window):
@@ -71,6 +95,7 @@ class FindInProjectPluginInstance:
 
     def show_window(self, window):
         self._window = FindInProjectWindow()
+        self._window.init()
 
 class FindInProjectPlugin(gedit.Plugin):
     def __init__(self):
