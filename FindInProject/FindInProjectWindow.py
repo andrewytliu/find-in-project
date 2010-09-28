@@ -70,6 +70,7 @@ class FindInProjectWindow:
         self._window.connect("key-release-event", self.window_key)
         self._searchbox = self._builder.get_object("searchbox")
         self._searchbox.connect("key-release-event", self.searchbox_key)
+        self._searchbox.connect("icon-release", self.searchbox_clear)
         self._builder.get_object("search-button").connect("clicked", self.search)
         self._builder.get_object("placeholder").add(self._browser)
         self._history = gtk.ListStore(gobject.TYPE_STRING)
@@ -93,6 +94,10 @@ class FindInProjectWindow:
     def window_key(self, widget, event):
         if event.keyval == gtk.keysyms.Escape:
             self._window.hide()
+
+    def searchbox_clear(self, widget, event, nid):
+        self._searchbox.set_text('')
+        self._searchbox.grab_focus()
 
     def searchbox_key(self, widget, event):
         if event.keyval == gtk.keysyms.Return:
