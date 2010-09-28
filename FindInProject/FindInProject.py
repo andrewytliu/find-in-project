@@ -51,17 +51,23 @@ class FindInProjectWindow:
         self._window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
         self._window.resize(600,500)
         self._window.set_destroy_with_parent(True)
+        self._window.connect("delete_event", self._window.hide_on_delete)
+        self._window.connect("key-release-event", self.window_key)
         self._searchbox = self._builder.get_object("searchbox")
-        self._searchbox.connect("key-release-event", self.searchbox_keyboard)
+        self._searchbox.connect("key-release-event", self.searchbox_key)
         self._builder.get_object("search-button").connect("clicked", self.search)
         self._builder.get_object("placeholder").add(self._browser)
-        self._window.show_all()
 
     def init(self):
         #self._searchbox.select_region(0,-1)
+        self._window.show_all()
         self._searchbox.grab_focus()
 
-    def searchbox_keyboard(self, widget, event):
+    def window_key(self, widget, event):
+        if event.keyval == gtk.keysyms.Escape:
+            self._window.hide()
+
+    def searchbox_key(self, widget, event):
         if event.keyval == gtk.keysyms.Return:
             self._builder.get_object("search-button").grab_focus()
             self.search(event)
@@ -75,13 +81,10 @@ class FindInProjectWindow:
 class FindInProjectPluginInstance:
     def __init__(self, window):
         self._window = window
-        self._result = None
-        self._test_file = ""
-        self._test_include = ""
+        self._search_window = FindInProjectWindow()
         self.add_menu()
 
     def deactivate(self):
-        self._browser = None
         self.window = None
         self.plugin = None
         self.remove_menu()
@@ -100,8 +103,7 @@ class FindInProjectPluginInstance:
         manager.ensure_update()
 
     def show_window(self, window):
-        self._window = FindInProjectWindow()
-        self._window.init()
+        self._search_window.init()
 
 class FindInProjectPlugin(gedit.Plugin):
     def __init__(self):
