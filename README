@@ -1,0 +1,14 @@
+Find in Project (Gedit Plugin)
+Andrew Liu <andrewliu33 (at) gmail com>
+
+Version 1.0.0
+Github location: http://github.com/eggegg/find-in-project
+
+Dependencies:
+* python-webkitgtk
+* ack-grep (optional, fallback to grep if it doesn't exist)
+
+This is a AckMate clone version for Gedit.
+<Ctrl><Shift><f> to open the search window.
+Click on the search result to open the files with certain line numbers.
+
