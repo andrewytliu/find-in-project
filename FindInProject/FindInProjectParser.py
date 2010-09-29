@@ -10,8 +10,13 @@ import re
 class FindInProjectParser:
 
     def __init__(self, query, path):
-        if os.popen("which ack ack-grep").readlines():
+        if os.popen("which ack-grep").readlines():
             arg = ['ack-grep', '-C', '2', '--color','--color-filename=reset', '--color-match=yellow', query]
+            process = subprocess.Popen(arg, stdout=subprocess.PIPE, cwd=path)
+            self.raw = cgi.escape(process.communicate()[0])
+            self.raw = self.raw.replace('\x1b[0m\x1b[K','')
+        elif os.popen("which ack").readlines():
+            arg = ['ack', '-C', '2', '--color','--color-filename=reset', '--color-match=yellow', query]
             process = subprocess.Popen(arg, stdout=subprocess.PIPE, cwd=path)
             self.raw = cgi.escape(process.communicate()[0])
             self.raw = self.raw.replace('\x1b[0m\x1b[K','')
