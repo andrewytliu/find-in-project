@@ -92,6 +92,7 @@ class FindInProjectWindow:
         self._completion.set_text_column(0)
 
     def init(self):
+        self._window.deiconify()
         self._window.show_all()
         self._searchbox.grab_focus()
 
@@ -101,6 +102,7 @@ class FindInProjectWindow:
             file_uri = self._path + match.group('file')
             line_number = match.group('line')
             gedit.commands.load_uri(self._gedit_window, file_uri, gedit.encoding_get_current(), int(line_number))
+            self._window.hide()
             return True
 
     def window_key(self, widget, event):
