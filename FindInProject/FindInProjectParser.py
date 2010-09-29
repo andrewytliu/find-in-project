@@ -25,6 +25,11 @@ class FindInProjectParser:
             process = subprocess.Popen(arg, stdout=subprocess.PIPE, cwd=path,env={"GREP_COLORS": "ms=33:mc=01;31:sl=:cx=:fn=0:ln=:bn=32:se="})
             self.raw = cgi.escape(process.communicate()[0])
             self.raw = self.raw.replace('\x1b[K', '')
+        self.filelist = []
+        self.matches = 0
+
+    def status(self):
+        return (self.matches, len(self.filelist))
 
     def html(self):
         blocks = self.__tuple()
@@ -76,5 +81,9 @@ class FindInProjectParser:
         matched = (match.group(3) == ':')
         clear = match.group(4).replace(' ', '&nbsp;')
         clear = re.sub("\\x1b\[33m(.*?)\\x1b\[0?m", '<span class="highlight">\\1</span>', clear)
+        if matched:
+            self.matches = self.matches + 1
+        if not match.group(1) in self.filelist:
+            self.filelist.append(match.group(1))
         return (match.group(1), match.group(2), matched, clear)
 

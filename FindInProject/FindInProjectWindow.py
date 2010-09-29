@@ -90,6 +90,7 @@ class FindInProjectWindow:
         self._completion.set_model(self._history)
         self._searchbox.set_completion(self._completion)
         self._completion.set_text_column(0)
+        self._message = self._builder.get_object("message")
 
     def init(self):
         self._window.deiconify()
@@ -119,9 +120,11 @@ class FindInProjectWindow:
             self.search(event)
 
     def search(self, event):
+        self._message.set_text('Loading...')
         self._path = filebrowser_root()
         query = self._searchbox.get_text()
         self._history.set(self._history.append(), 0, query)
-        html = FindInProjectParser(query, url2pathname(self._path)[7:]).html()
-        self._browser.load_string(style_str + html, "text/html", "utf-8", "about:")
+        parser = FindInProjectParser(query, url2pathname(self._path)[7:])
+        self._browser.load_string(style_str + parser.html(), "text/html", "utf-8", "about:")
+        self._message.set_text('%d line(s) matched in %d file(s)' % parser.status())
 
