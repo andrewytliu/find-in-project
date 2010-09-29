@@ -67,7 +67,7 @@ class FindInProjectParser:
         #\x1b[0mew\x1b[0m-67-    Eastwind()
         #\x1b[0mew\x1b[0m-68-
 
-        groups = self.raw.split('--')
+        groups = self.raw.split('--\n')
         lines = [[self.__metadata(l) for l in g.split('\n') if l != ''] for g in groups]
         return lines
 
