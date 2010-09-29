@@ -15,12 +15,12 @@ style_str="""<style>
 tbody {
   font-family: Consolas, Monospace,"Courier New", courier, monospace;
   color: #a0a0a0;
+  word-wrap: break-word;
 }
 table {
   margin: 10px;
   width: 97%;
   table-layout: fixed;
-  word-wrap: break-word;
   border-collapse: collapse;
 }
 .filename {
@@ -32,6 +32,8 @@ table {
 }
 thead td {
   padding: 6px 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 tbody tr, thead {
   cursor: hand;

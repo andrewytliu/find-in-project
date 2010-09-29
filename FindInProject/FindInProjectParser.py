@@ -43,7 +43,7 @@ class FindInProjectParser:
     <colgroup class="code"></colgroup>
     <thead onclick="javascript:toggle(this)">
         <tr>
-            <td class="filename" colspan="2"><span class="open">&#9660;</span> %s</td>
+            <td class="filename" colspan="2"><span class="open">&#9660;</span>&nbsp;%s</td>
         </tr>
     </thead>
     <tbody>
