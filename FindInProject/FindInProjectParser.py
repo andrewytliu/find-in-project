@@ -86,8 +86,19 @@ class FindInProjectParser:
         #\x1b[0mew\x1b[0m-68-
 
         groups = self.raw.split('--\n')
-        lines = [[self.__metadata(l) for l in g.split('\n') if l != ''] for g in groups]
-        return lines
+        if len(groups) == 1:
+            filename_hash = {}
+            for l in groups[0].split('\n'):
+                if not l:
+                    continue
+                meta = self.__metadata(l)
+                if meta[0] in filename_hash:
+                    filename_hash[meta[0]].append(meta)
+                else:
+                    filename_hash[meta[0]] = [meta]
+            return [filename_hash[k] for k in filename_hash.keys()]
+        else:
+            return [[self.__metadata(l) for l in g.split('\n') if l != ''] for g in groups]
 
     def __metadata(self, line):
         match = re.match("^\\x1b\[0m(.*?)\\x1b\[0?m[:-](\d+)([:-])(.*)", line)
