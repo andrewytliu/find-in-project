@@ -9,19 +9,32 @@ import re
 
 class FindInProjectParser:
 
-    def __init__(self, query, path):
+    def __init__(self, query, path, context=True, regex=False, ignorecase=False):
+        ack = ""
         if os.popen("which ack-grep").readlines():
-            arg = ['ack-grep', '-C', '2', '--color','--color-filename=reset', '--color-match=yellow', query]
-            process = subprocess.Popen(arg, stdout=subprocess.PIPE, cwd=path)
-            self.raw = cgi.escape(process.communicate()[0])
-            self.raw = self.raw.replace('\x1b[0m\x1b[K','')
+            ack = "ack-grep"
         elif os.popen("which ack").readlines():
-            arg = ['ack', '-C', '2', '--color','--color-filename=reset', '--color-match=yellow', query]
+            ack = "ack"
+
+        if ack:
+            arg = [ack, '--color', '--color-filename=reset', '--color-match=yellow', query]
+            if context:
+                arg.extend(['-C', '2'])
+            if not regex:
+                arg.append('-Q')
+            if ignorecase:
+                arg.append('-i')
             process = subprocess.Popen(arg, stdout=subprocess.PIPE, cwd=path)
             self.raw = cgi.escape(process.communicate()[0])
             self.raw = self.raw.replace('\x1b[0m\x1b[K','')
         else:
-            arg = ['grep', '-R', '-n', '-H', '-I', '-C', '2', query, '.', '--color=force']
+            arg = ['grep', '-R', '-n', '-H', '-I', query, '.', '--color=force']
+            if context:
+                arg.extend(['-C', '2'])
+            if regex:
+                arg.append('-E')
+            if ignorecase:
+                arg.append('-i')
             process = subprocess.Popen(arg, stdout=subprocess.PIPE, cwd=path,env={"GREP_COLORS": "ms=33:mc=01;31:sl=:cx=:fn=0:ln=:bn=32:se="})
             self.raw = cgi.escape(process.communicate()[0])
             self.raw = self.raw.replace('\x1b[K', '')
