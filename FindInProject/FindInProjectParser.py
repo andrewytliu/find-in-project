@@ -49,7 +49,7 @@ class FindInProjectParser:
     def html(self):
         blocks = self.__tuple()
         result = ""
-        if len(blocks[0]) == 0:
+        if not blocks or len(blocks[0]) == 0:
             return result
         for block in blocks:
             table = """

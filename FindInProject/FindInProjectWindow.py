@@ -97,6 +97,7 @@ class FindInProjectWindow:
         self._show_context = self._builder.get_object("show-context")
         self._use_regex = self._builder.get_object("use-regex")
         self._extbox = self._builder.get_object("extbox")
+        self._extbox.connect("icon-release", self.extbox_clear)
 
     def init(self):
         self._window.deiconify()
@@ -119,6 +120,10 @@ class FindInProjectWindow:
     def searchbox_clear(self, widget, event, nid):
         self._searchbox.set_text('')
         self._searchbox.grab_focus()
+
+    def extbox_clear(self, widget, event, nid):
+        self._extbox.set_text('')
+        self._extbox.grab_focus()
 
     def searchbox_key(self, widget, event):
         if event.keyval == gtk.keysyms.Return:
