@@ -96,6 +96,7 @@ class FindInProjectWindow:
         self._ignore_case = self._builder.get_object("ignore-case")
         self._show_context = self._builder.get_object("show-context")
         self._use_regex = self._builder.get_object("use-regex")
+        self._extbox = self._builder.get_object("extbox")
 
     def init(self):
         self._window.deiconify()
@@ -129,7 +130,7 @@ class FindInProjectWindow:
         self._path = filebrowser_root()
         query = self._searchbox.get_text()
         self._history.set(self._history.append(), 0, query)
-        parser = FindInProjectParser(query, url2pathname(self._path)[7:], context=self._show_context.get_active(), regex=self._use_regex.get_active(), ignorecase=self._ignore_case.get_active())
+        parser = FindInProjectParser(query, url2pathname(self._path)[7:], context=self._show_context.get_active(), regex=self._use_regex.get_active(), ignorecase=self._ignore_case.get_active(), filetype=self._extbox.get_text().replace(' ',''))
         self._browser.load_string(style_str + parser.html(), "text/html", "utf-8", "about:")
         self._message.set_text('%d line(s) matched in %d file(s)' % parser.status())
 

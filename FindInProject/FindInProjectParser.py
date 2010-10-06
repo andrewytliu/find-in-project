@@ -9,7 +9,7 @@ import re
 
 class FindInProjectParser:
 
-    def __init__(self, query, path, context=True, regex=False, ignorecase=False):
+    def __init__(self, query, path, context=True, regex=False, ignorecase=False, filetype=None):
         ack = ""
         if os.popen("which ack-grep").readlines():
             ack = "ack-grep"
@@ -24,6 +24,8 @@ class FindInProjectParser:
                 arg.append('-Q')
             if ignorecase:
                 arg.append('-i')
+            if filetype:
+                arg.extend(['--type-set', 'custom=%s' % filetype, '--type=custom'])
             process = subprocess.Popen(arg, stdout=subprocess.PIPE, cwd=path)
             self.raw = cgi.escape(process.communicate()[0])
             self.raw = self.raw.replace('\x1b[0m\x1b[K','')
@@ -86,7 +88,7 @@ class FindInProjectParser:
         #\x1b[0mew\x1b[0m-68-
 
         groups = self.raw.split('--\n')
-        if len(groups) == 1:
+        if groups and len(groups) == 1:
             filename_hash = {}
             for l in groups[0].split('\n'):
                 if not l:
