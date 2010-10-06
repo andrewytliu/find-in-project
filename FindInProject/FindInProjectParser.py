@@ -10,6 +10,8 @@ import re
 class FindInProjectParser:
 
     def __init__(self, query, path, context=True, regex=False, ignorecase=False, filetype=None):
+        if filetype:
+            filetype = filetype.replace(' ', '').split(',')
         ack = ""
         if os.popen("which ack-grep").readlines():
             ack = "ack-grep"
@@ -25,7 +27,8 @@ class FindInProjectParser:
             if ignorecase:
                 arg.append('-i')
             if filetype:
-                arg.extend(['--type-set', 'custom=%s' % filetype, '--type=custom'])
+                filetype = ['.' + f for f in filetype]
+                arg.extend(['--type-set', 'custom=%s' % ','.join(filetype), '--type=custom'])
             process = subprocess.Popen(arg, stdout=subprocess.PIPE, cwd=path)
             self.raw = cgi.escape(process.communicate()[0])
             self.raw = self.raw.replace('\x1b[0m\x1b[K','')
@@ -37,6 +40,8 @@ class FindInProjectParser:
                 arg.append('-E')
             if ignorecase:
                 arg.append('-i')
+            if filetype:
+                arg.append('--include=*.{%s}' % ','.join(filetype))
             process = subprocess.Popen(arg, stdout=subprocess.PIPE, cwd=path,env={"GREP_COLORS": "ms=33:mc=01;31:sl=:cx=:fn=0:ln=:bn=32:se="})
             self.raw = cgi.escape(process.communicate()[0])
             self.raw = self.raw.replace('\x1b[K', '')
