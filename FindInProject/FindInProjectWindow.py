@@ -98,11 +98,13 @@ class FindInProjectWindow:
         self._use_regex = self._builder.get_object("use-regex")
         self._extbox = self._builder.get_object("extbox")
         self._extbox.connect("icon-release", self.box_clear)
+        self._spinner = self._builder.get_object("spinner")
 
     def init(self):
         self._window.deiconify()
         self._window.show_all()
         self._searchbox.grab_focus()
+        self._spinner.hide()
 
     def goto_file(self, page, frame, request):
         match = self.protocol.search(request.get_uri())
