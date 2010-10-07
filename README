@@ -1,10 +1,17 @@
 Find in Project (Gedit Plugin)
 Andrew Liu <andrewliu33 (at) gmail com>
 
-Version 1.0.0
+Version 1.1.0
 Github location: http://github.com/eggegg/find-in-project
 
+Features:
+* Search files within project with ack-grep or grep
+* Good gui look
+* Context for matched lines
+* Support regular expression
+
 Dependencies:
+* filebrowser plugin enabled
 * python-webkitgtk
 * ack-grep (optional, fallback to grep if it doesn't exist)
 
