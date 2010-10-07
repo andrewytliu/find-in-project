@@ -113,6 +113,8 @@ class FindInProjectWindow:
             file_uri = self._path + match.group('file')
             line_number = match.group('line')
             gedit.commands.load_uri(self._gedit_window, file_uri, gedit.encoding_get_current(), int(line_number))
+            # dirty fix to make the file roll to a certain line
+            gedit.commands.load_uri(self._gedit_window, file_uri, gedit.encoding_get_current(), int(line_number))
             self._window.hide()
             return True
 
