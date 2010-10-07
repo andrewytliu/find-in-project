@@ -83,7 +83,7 @@ class FindInProjectWindow:
         self._window.connect("delete_event", self._window.hide_on_delete)
         self._window.connect("key-release-event", self.window_key)
         self._searchbox = self._builder.get_object("searchbox")
-        self._searchbox.connect("key-release-event", self.searchbox_key)
+        self._searchbox.connect("key-release-event", self.box_key)
         self._searchbox.connect("icon-release", self.box_clear)
         self._builder.get_object("search-button").connect("clicked", self.search)
         self._builder.get_object("placeholder").add(self._browser)
@@ -98,6 +98,7 @@ class FindInProjectWindow:
         self._use_regex = self._builder.get_object("use-regex")
         self._extbox = self._builder.get_object("extbox")
         self._extbox.connect("icon-release", self.box_clear)
+        self._extbox.connect("key-release-event", self.box_key)
         self._spinner = self._builder.get_object("spinner")
 
     def init(self):
@@ -123,7 +124,7 @@ class FindInProjectWindow:
         widget.set_text('')
         widget.grab_focus()
 
-    def searchbox_key(self, widget, event):
+    def box_key(self, widget, event):
         if event.keyval == gtk.keysyms.Return:
             self._builder.get_object("search-button").grab_focus()
             self.search(event)
@@ -135,7 +136,7 @@ class FindInProjectWindow:
         self._message.set_text('Loading...')
         self._spinner.show()
         self._spinner.start()
-        self._window.queue_draw()
+        gtk.gdk.window_process_all_updates()
         self._path = filebrowser_root()
         self._history.set(self._history.append(), 0, query)
         parser = FindInProjectParser(query, url2pathname(self._path)[7:], context=self._show_context.get_active(), regex=self._use_regex.get_active(), ignorecase=self._ignore_case.get_active(), filetype=self._extbox.get_text())
