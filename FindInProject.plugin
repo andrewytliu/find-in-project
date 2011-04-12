@@ -1,7 +1,7 @@
-[Gedit Plugin]
+[Plugin]
 Loader=python
 Module=FindInProject
-IAge=2
+IAge=3
 Name=Find in Project
 Name[zh]=專案搜尋
 Description=Search in project.
