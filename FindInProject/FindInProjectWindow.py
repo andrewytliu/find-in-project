@@ -1,9 +1,5 @@
-import gtk, gedit
-import gobject
-import webkit
-import pygtk
-import os
-import re
+from gi.repository import Gio, GObject, Gtk
+import os, re, webkit
 from urllib import url2pathname
 from FindInProjectParser import FindInProjectParser
 from FindInProjectUtil import filebrowser_root

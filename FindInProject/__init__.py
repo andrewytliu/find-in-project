@@ -1,18 +1,22 @@
-import gedit
+from gi.repository import GObject, Peas, Gedit
 from FindInProject import FindInProjectPluginInstance
 
-class FindInProjectPlugin(gedit.Plugin):
+class FindInProjectPlugin(GObject.Object, Gedit.WindowActivate):
+    __gtype_name__ = "FindInProjectPlugin"  
+
+    window = GObject.property(type=Gedit.Window)
+  
     def __init__(self):
-        gedit.Plugin.__init__(self)
+        GObject.Object.__init__(self)
         self._instances = {}
 
-    def activate(self, window):
-        self._instances[window] = FindInProjectPluginInstance(window)
+    def activate(self):
+        self._instances[self.window] = FindInProjectPluginInstance(window)
 
-    def deactivate(self, window):
-        self._instances[window].deactivate()
-        del self._instances[window]
+    def deactivate(self):
+        self._instances[self.window].deactivate()
+        del self._instances[self.window]
 
-    def update_ui(self, window):
+    def update_ui(self):
         pass
 
